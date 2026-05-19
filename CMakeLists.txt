@@ -59,6 +59,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/ContainerBiodegradabile.cpp
         include/ContainerElectronice.h
         src/ContainerElectronice.cpp
+        src/StatieSortare.cpp
+        include/Exceptii.h
 )
 target_sources(${MAIN_EXECUTABLE_NAME}
     PRIVATE

@@ -16,8 +16,12 @@ public:
     ContainerDeseuri(int id_container, std::string locatie_container, float capacitate_maxima_container);
 
     virtual ~ContainerDeseuri() = default;
-    virtual ContainerDeseuri* clone() const = 0;
+    [[nodiscard]] virtual ContainerDeseuri* clone() const = 0;
     void afiseaza() const;
+
+    void adauga_deseuri(float cantitate);
+
+    float goleste();
 protected:
     virtual void afiseaza_impl() const = 0;
 };

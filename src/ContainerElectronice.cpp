@@ -1,4 +1,4 @@
-#include <ContainerElectronice.h>
+#include "ContainerElectronice.h"
 
 ContainerElectronice::ContainerElectronice(int id_container, std::string locatie_container,
 float capacitate_electronice, bool senzor_scurgeri_electronice)

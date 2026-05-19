@@ -1,4 +1,4 @@
-#include <ContainerBiodegradabile.h>
+#include "ContainerBiodegradabile.h"
 
 ContainerBiodegradabile::ContainerBiodegradabile(int id_bio, const std::string &locatie_bio, float capacitate_bio,
     float temperatura_bio, bool anti_miros) : ContainerDeseuri(id_bio, locatie_bio, capacitate_bio),
