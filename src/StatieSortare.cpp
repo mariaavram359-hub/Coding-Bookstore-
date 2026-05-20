@@ -3,6 +3,25 @@
 #include "ContainerBiodegradabile.h"
 #include "ContainerElectronice.h"
 #include <iostream>
+#include <utility>
+#include <algorithm>
+
+StatieSortare::StatieSortare(const StatieSortare& alta_statie) {
+    for (const ContainerDeseuri* container : alta_statie.flota_containere) {
+        this->flota_containere.push_back(container->clone());
+    }
+    std::cout << "[Sistem] S-a creat o copie la indigo (Deep Copy) a flotei.\n";
+}
+
+void StatieSortare::swap(StatieSortare& alta_statie) noexcept {
+    using std::swap;
+    swap(this->flota_containere, alta_statie.flota_containere);
+}
+
+StatieSortare& StatieSortare::operator=(StatieSortare alta_statie) {
+    this->swap(alta_statie);
+    return *this;
+}
 
 float StatieSortare::total_reciclat = 0.0f;
 
@@ -40,6 +59,15 @@ void StatieSortare::afiseaza_statistici() {
     std::cout << "STATISTICI GLOBALE CARTIER:\n";
     std::cout << "Total deseuri procesate: " << total_reciclat << " kg\n";
     std::cout << "====================================\n";
+}
+
+void StatieSortare::sorteaza_dupa_umplere() {
+    std::ranges::sort(flota_containere,
+                      [](const ContainerDeseuri* a, const ContainerDeseuri* b) {
+                          return a->get_grad_umplere() > b->get_grad_umplere();
+                      });
+
+    std::cout << "\n[Sistem Optimizare] Flota a fost sortata: Masina va merge intai la cele mai pline containere.\n";
 }
 
 void StatieSortare::colecteaza_tot_gunoiul() const {

@@ -16,4 +16,10 @@ public:
        : std::runtime_error(msg) {
    }
 };
+
+class EroareTipDeseu : public std::runtime_error {
+public:
+    explicit EroareTipDeseu(const std::string& msg) : std::runtime_error(msg) {}
+};
+
 #endif //OOP_EXCEPTII_H

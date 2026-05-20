@@ -3,6 +3,7 @@
 ContainerBiodegradabile::ContainerBiodegradabile(int id_bio, const std::string &locatie_bio, float capacitate_bio,
     float temperatura_bio, bool anti_miros) : ContainerDeseuri(id_bio, locatie_bio, capacitate_bio),
     temperatura(temperatura_bio), sistem_anti_miros(anti_miros){
+    tip_acceptat = "Biologic";
 }
 
 ContainerDeseuri * ContainerBiodegradabile::clone() const {

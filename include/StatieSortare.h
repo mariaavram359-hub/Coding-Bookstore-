@@ -17,9 +17,15 @@ private:
 public:
     StatieSortare() = default;
     ~StatieSortare();
+    StatieSortare(const StatieSortare& alta_statie);
+    StatieSortare& operator=(StatieSortare alta_statie);
+
+    void swap(StatieSortare& alta_statie) noexcept;
 
     void adaugaContainer(ContainerDeseuri* container);
     void mentenanta_rutina() const;
+
+    void sorteaza_dupa_umplere();
 
     void colecteaza_tot_gunoiul() const;
     static void afiseaza_statistici();

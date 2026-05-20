@@ -21,8 +21,14 @@ public:
 
     void adauga_deseuri(float cantitate);
 
+    void adauga_deseuri(float cantitate, const std::string& tip_deseu_aruncat);
+
     float goleste();
+
+    [[nodiscard]] float get_grad_umplere() const;
+
 protected:
+    std::string tip_acceptat;
     virtual void afiseaza_impl() const = 0;
 };
 
