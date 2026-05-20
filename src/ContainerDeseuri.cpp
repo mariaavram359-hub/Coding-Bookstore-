@@ -20,8 +20,14 @@ void ContainerDeseuri::afiseaza() const {
 }
 
 void ContainerDeseuri::adauga_deseuri(float cantitate, const std::string& tip_deseu_aruncat) {
+    if (cantitate <= 0) {
+        throw EroareCantitateInvalida("Eroare Logica: Cantitatea de deseuri introdusa (" +
+                                      std::to_string(cantitate) +
+                                      " kg) trebuie sa fie strict pozitiva!");
+    }
+
     if (tip_deseu_aruncat != tip_acceptat) {
-        // Dacă nu se potrivesc, trapa rămâne închisă și aruncăm excepția nouă!
+
         throw EroareTipDeseu("Trapa blocata! Nu puteti arunca [" + tip_deseu_aruncat + "] intr-un container pentru [" + tip_acceptat + "].");
     }
 

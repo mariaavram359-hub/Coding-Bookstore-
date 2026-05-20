@@ -87,31 +87,41 @@ int main() {
                         statia_sector_2.afiseaza_rezumat();
                         break;
                     case 2: {
-                        std::cout << "\nIntroduceti ID-ul (Indexul) containerului (0=Plastic, 1=Bio, 2=Electronice): ";
-                        int index;
-                        if (!(std::cin >> index)) {
-                            curata_cin(); std::cout << "Index invalid!\n"; break;
-                        }
-
-                        std::cout << "Introduceti cantitatea (kg): ";
-                        float cantitate;
-                        if (!(std::cin >> cantitate)) {
-                            curata_cin();
-                            std::cout << "Cantitate invalida!\n";
-                            break;
-                        }
-
-                        std::cout << "Introduceti tipul deseului (Plastic / Biologic / Electronice): ";
-                        std::string tip;
-                        std::cin >> tip;
-
+                        // TOTUL intra intr-un singur bloc try
                         try {
+                            std::cout << "\nIntroduceti ID-ul (Indexul) containerului (0=Plastic, 1=Bio, 2=Electronice): ";
+                            int index;
+                            if (!(std::cin >> index)) {
+                                curata_cin();
+                                throw std::invalid_argument("Index invalid!");
+                            }
+
+                            statia_sector_2[index]; // Testam daca exista indexul
+
+                            std::cout << "Introduceti cantitatea (kg): ";
+                            float cantitate;
+                            if (!(std::cin >> cantitate)) {
+                                curata_cin();
+                                throw std::invalid_argument("Cantitate invalida!");
+                            }
+
+                            // Daca aruncam exceptia aici, trebuie sa fim in interiorul acoladelor de la 'try'
+                            if (cantitate <= 0) {
+                                throw EroareCantitateInvalida("Cantitatea introdusa trebuie sa fie strict pozitiva!");
+                            }
+
+                            std::cout << "Introduceti tipul deseului (Plastic / Biologic / Electronice): ";
+                            std::string tip;
+                            std::cin >> tip;
+
                             *(statia_sector_2[index]) += PachetDeseu{cantitate, tip};
-                        } catch (const std::exception& e) {
+
+                        } catch (const std::exception& e) { // <-- PRINDE ABSOLUT TOT
                             std::cerr << "\n[ACTIUNE RESPINSA] " << e.what() << "\n";
                         }
                         break;
                     }
+
                     case 3:
                         in_meniu_cetatean = false;
                         break;

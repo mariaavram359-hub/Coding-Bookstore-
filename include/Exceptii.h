@@ -19,7 +19,22 @@ public:
 
 class EroareTipDeseu : public std::runtime_error {
 public:
-    explicit EroareTipDeseu(const std::string& msg) : std::runtime_error(msg) {}
+    explicit EroareTipDeseu(const std::string& msg)
+    : std::runtime_error(msg) {
+
+    }
 };
+
+class EroareCantitateInvalida : public std::exception {
+private:
+    std::string mesaj;
+public:
+    explicit EroareCantitateInvalida(const std::string& msg) : mesaj(msg) {}
+
+    [[nodiscard]] const char* what() const noexcept override {
+        return mesaj.c_str();
+    }
+};
+
 
 #endif //OOP_EXCEPTII_H
