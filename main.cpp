@@ -1,81 +1,168 @@
-#include <iostream>
-#include "ContainerElectronice.h"
-#include "ContainerBiodegradabile.h"
-#include "ContainerPlastic.h"
-#include "StatieSortare.h"
-#include "Exceptii.h"
 
+#include "include/StatieSortare.h"
+#include "include/ContainerPlastic.h"
+#include "include/ContainerBiodegradabile.h"
+#include "include/ContainerElectronice.h"
+#include "include/Exceptii.h"
+#include <iostream>
+#include <limits>
+
+void curata_cin() {
+    if (std::cin.eof()) {
+        std::cout << "\n[Sistem] Iesire de urgenta (EOF detectat).\n";
+        exit(1);
+    }
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
+}
 
 int main() {
-    std::cout << "--- Initializare Sistem Smart de Gestionare a Deseurilor ---\n";
+    std::cout << "=== PORNIRE SISTEM SMART DE GESTIONARE A DESEURILOR ===\n\n";
 
-    StatieSortare statie_centrala;
-
+    StatieSortare statia_centrala;
     auto* c_plastic = new ContainerPlastic(101, "Strada Primaverii", 200.0f, 85.5f);
     auto* c_bio = new ContainerBiodegradabile(102, "Piata Centrala", 150.0f, 18.5f, true);
-    auto* c_electric = new ContainerElectronice(103, "Liceul Teoretic", 50.0f, true);
+    auto* c_baterii = new ContainerElectronice(103, "Liceul Teoretic", 50.0f, true);
 
-    statie_centrala.adaugaContainer(c_plastic);
-    statie_centrala.adaugaContainer(c_bio);
-    statie_centrala.adaugaContainer(c_electric);
+    statia_centrala.adaugaContainer(c_plastic);
+    statia_centrala.adaugaContainer(c_bio);
+    statia_centrala.adaugaContainer(c_baterii);
 
-    std::cout << "--- ACTIVITATE ZILNICA Sector 1 ---\n";
     try {
-
-        PachetDeseu sticle_plastic = {50.0f, "Plastic"};
-        PachetDeseu resturi_alimentare = {100.0f, "Biologic"};
-
-        *c_plastic += sticle_plastic;
-        *c_bio += resturi_alimentare;
-        *c_electric += PachetDeseu{10.0f, "Electronice"}; // Creare directă inline
-
-        std::cout << "\nAccesam primul container din statie:\n";
-        std::cout << *(statie_centrala[0]) << "\n";
-
-        std::cout << "\n[Testare Securitate] Un cetatean neatent arunca baterii in containerul de plastic...\n";
-        *c_plastic += PachetDeseu{5.0f, "Electronice"};
-
+        *c_plastic += PachetDeseu{50.0f, "Plastic"};
+        *c_bio += PachetDeseu{100.0f, "Biologic"};
+        *c_baterii += PachetDeseu{10.0f, "Electronice"};
+        *c_plastic += PachetDeseu{5.0f, "Electronice"}; 
     } catch (const EroareTipDeseu& eroare) {
-        std::cout << "\n[EROARE TIP DESEU] " << eroare.what() << "\n\n";
+        std::cerr << "[DEMO EROARE] " << eroare.what() << "\n\n";
     } catch (const EroareSuprasolicitare& eroare) {
-        std::cout << "\n[ALERTA SISTEM] " << eroare.what() << "\n\n";
-    } catch (const std::out_of_range& eroare) {
-        std::cout << "\n[EROARE MEMORIE] " << eroare.what() << "\n\n";
+        std::cerr << "[DEMO ALERTA] " << eroare.what() << "\n\n";
     }
 
-    statie_centrala.mentenanta_rutina();
+    statia_centrala.colecteaza_tot_gunoiul();
 
-    statie_centrala.sorteaza_dupa_umplere();
-
-    std::cout << "\n--- VERIFICARE ORDINE DUPA SORTARE ---\n";
-    statie_centrala.afiseaza_rezumat();
-    statie_centrala.colecteaza_tot_gunoiul();
-
-    std::cout << "\n=== INITIALIZARE STATIE SECTOR 2 ===\n";
     StatieSortare statia_sector_2;
+    statia_sector_2.adaugaContainer(new ContainerPlastic(201, "Aleea Trandafirilor", 300.0f, 90.0f));
+    statia_sector_2.adaugaContainer(new ContainerBiodegradabile(202, "Parcul Tineretului", 200.0f, 15.0f, false));
+    statia_sector_2.adaugaContainer(new ContainerElectronice(203, "Bulevardul Unirii", 50.0f, true));
 
-    auto* c_plastic_s2 = new ContainerPlastic(201, "Aleea Trandafirilor", 300.0f, 90.0f);
-    auto* c_bio_s2 = new ContainerBiodegradabile(202, "Parcul Tineretului", 200.0f, 15.0f, false);
+    bool sistem_pornit = true;
 
-    statia_sector_2.adaugaContainer(c_plastic_s2);
-    statia_sector_2.adaugaContainer(c_bio_s2);
+    while (sistem_pornit) {
+        std::cout << "\n=========================================\n";
+        std::cout << "        SELECTARE ROL UTILIZATOR         \n";
+        std::cout << "=========================================\n";
+        std::cout << "1. Cetatean (Arunca deseuri)\n";
+        std::cout << "2. Administrator (Gestioneaza sistemul)\n";
+        std::cout << "3. Oprire Sistem\n";
+        std::cout << "Alegeti rolul: ";
+        
+        int rol;
+        if (!(std::cin >> rol)) {
+            curata_cin();
+            continue;
+        }
 
-    std::cout << "--- ACTIVITATE ZILNICA SECTOR 2 ---\n";
-    c_plastic_s2->adauga_deseuri(120.0f, "Plastic");
-    c_bio_s2->adauga_deseuri(50.0f, "Biologic");
+        if (rol == 3) {
+            sistem_pornit = false;
+            break;
+        }
 
-    statia_sector_2.mentenanta_rutina();
+        if (rol == 1) {
+            bool in_meniu_cetatean = true;
+            while (in_meniu_cetatean) {
+                std::cout << "\n--- INTERFATA CETATEAN ---\n";
+                std::cout << "1. Vezi containerele disponibile\n";
+                std::cout << "2. Arunca gunoi\n";
+                std::cout << "3. Inapoi la selectia rolului\n";
+                std::cout << "Alegere: ";
+                
+                int optiune_c;
+                if (!(std::cin >> optiune_c)) {
+                    curata_cin(); continue;
+                }
 
-    statia_sector_2.sorteaza_dupa_umplere();
+                switch (optiune_c) {
+                    case 1:
+                        statia_sector_2.afiseaza_rezumat();
+                        break;
+                    case 2: {
+                        std::cout << "\nIntroduceti ID-ul (Indexul) containerului (0=Plastic, 1=Bio, 2=Electronice): ";
+                        int index;
+                        if (!(std::cin >> index)) {
+                            curata_cin(); std::cout << "Index invalid!\n"; break;
+                        }
 
-    std::cout << "\n--- VERIFICARE ORDINE DUPA SORTARE ---\n";
-    statia_sector_2.afiseaza_rezumat();
+                        std::cout << "Introduceti cantitatea (kg): ";
+                        float cantitate;
+                        if (!(std::cin >> cantitate)) {
+                            curata_cin();
+                            std::cout << "Cantitate invalida!\n";
+                            break;
+                        }
 
-    statia_sector_2.colecteaza_tot_gunoiul();
+                        std::cout << "Introduceti tipul deseului (Plastic / Biologic / Electronice): ";
+                        std::string tip;
+                        std::cin >> tip;
 
-    StatieSortare::afiseaza_statistici();
+                        try {
+                            *(statia_sector_2[index]) += PachetDeseu{cantitate, tip};
+                        } catch (const std::exception& e) {
+                            std::cerr << "\n[ACTIUNE RESPINSA] " << e.what() << "\n";
+                        }
+                        break;
+                    }
+                    case 3:
+                        in_meniu_cetatean = false;
+                        break;
+                    default:
+                        std::cout << "Optiune invalida!\n";
+                }
+            }
+        }
+        else if (rol == 2) {
+            bool in_meniu_admin = true;
+            while (in_meniu_admin) {
+                std::cout << "\n--- INTERFATA ADMINISTRATOR ---\n";
+                std::cout << "1. Mentenanta (Detalii tehnice)\n";
+                std::cout << "2. Sorteaza flota dupa umplere\n";
+                std::cout << "3. Trimite masina de gunoi (Colectare)\n";
+                std::cout << "4. Vezi statistici globale oras\n";
+                std::cout << "5. Inapoi la selectia rolului\n";
+                std::cout << "Alegere: ";
+                
+                int optiune_a;
+                if (!(std::cin >> optiune_a)) {
+                    curata_cin();
+                    continue;
+                }
 
-    std::cout << "Sistem oprit cu succes.\n";
+                switch (optiune_a) {
+                    case 1:
+                        statia_sector_2.mentenanta_rutina();
+                        break;
+                    case 2:
+                        statia_sector_2.sorteaza_dupa_umplere();
+                        statia_sector_2.afiseaza_rezumat();
+                        break;
+                    case 3:
+                        statia_sector_2.colecteaza_tot_gunoiul();
+                        break;
+                    case 4:
+                        StatieSortare::afiseaza_statistici();
+                        break;
+                    case 5:
+                        in_meniu_admin = false;
+                        break;
+                    default:
+                        std::cout << "Optiune invalida!\n";
+                }
+            }
+        } else {
+            std::cout << "Rol invalid!\n";
+        }
+    }
 
+    std::cout << "\n[SISTEM OPRIT] Va multumim ca pastrati orasul curat!\n";
     return 0;
 }
