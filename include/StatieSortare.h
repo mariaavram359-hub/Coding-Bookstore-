@@ -7,7 +7,9 @@
 
 #pragma once
 #include <vector>
+#include <stdexcept>
 #include "ContainerDeseuri.h"
+
 
 class StatieSortare {
 private:
@@ -22,11 +24,13 @@ public:
 
     void swap(StatieSortare& alta_statie) noexcept;
 
+    ContainerDeseuri* operator[](size_t index);
+
     void adaugaContainer(ContainerDeseuri* container);
     void mentenanta_rutina() const;
 
     void sorteaza_dupa_umplere();
-
+    void afiseaza_rezumat() const;
     void colecteaza_tot_gunoiul() const;
     static void afiseaza_statistici();
 };

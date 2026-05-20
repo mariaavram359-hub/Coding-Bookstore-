@@ -43,3 +43,15 @@ float ContainerDeseuri::goleste() {
 float ContainerDeseuri::get_grad_umplere() const {
     return grad_umplere;
 }
+
+ContainerDeseuri& ContainerDeseuri::operator+=(const PachetDeseu& pachet) {
+    this->adauga_deseuri(pachet.cantitate, pachet.tip);
+    return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const ContainerDeseuri& container) {
+    os << "[Rezumat Container] ID: " << container.id
+       << " | Tip: " << container.tip_acceptat
+       << " | Umplere: " << container.grad_umplere << "/" << container.capacitate_maxima << " kg";
+    return os;
+}

@@ -85,3 +85,18 @@ void StatieSortare::colecteaza_tot_gunoiul() const {
     std::cout << "[Sistem] Masina a colectat " << cantitate_tura_curenta << " kg in aceasta tura.\n";
     std::cout << "--- COLECTARE FINALIZATA ---\n\n";
 }
+
+ContainerDeseuri* StatieSortare::operator[](size_t index) {
+    if (index >= flota_containere.size()) {
+        throw std::out_of_range("Eroare de indexare: Nu exista niciun container la pozitia " + std::to_string(index));
+    }
+    return flota_containere[index];
+}
+
+void StatieSortare::afiseaza_rezumat() const {
+    std::cout << "\n--- REZUMAT FLOTA --- \n";
+    for (const ContainerDeseuri* container : flota_containere) {
+        std::cout << *container << "\n";
+    }
+    std::cout << "---------------------\n";
+}
