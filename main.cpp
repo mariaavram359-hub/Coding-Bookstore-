@@ -9,6 +9,29 @@
 #include <iostream>
 #include <limits>
 
+bool autentifica_admin() {
+    const std::string parola_corecta = "admin123";
+    std::string parola_introdusa;
+    int incercari = 3;
+
+    while (incercari > 0) {
+        std::cout << "Introduceti parola de administrator: ";
+        std::cin >> parola_introdusa;
+
+        if (parola_introdusa == parola_corecta) {
+            std::cout << "[Sistem] Autentificare reusita!\n";
+            return true;
+        }
+
+        incercari--;
+        if (incercari > 0)
+            std::cout << "[Sistem] Parola gresita! Mai aveti " << incercari << " incercari.\n";
+    }
+
+    std::cout << "[Sistem] Prea multe incercari gresite. Acces blocat!\n";
+    return false;
+}
+
 void curata_cin() {
     if (std::cin.eof()) {
         std::cout << "\n[Sistem] Iesire de urgenta (EOF detectat).\n";
@@ -29,6 +52,10 @@ int main() {
     statia_centrala.adaugaContainer(c_plastic);
     statia_centrala.adaugaContainer(c_bio);
     statia_centrala.adaugaContainer(c_electric);
+
+    c_plastic->set_prag_colectare(80.0f);   // colectare la 80%
+    c_bio->set_prag_colectare(70.0f);       // bio se colecteaza mai devreme
+    c_electric->set_prag_colectare(60.0f);  // electronicele, si mai devreme
 
     try {
         *c_plastic += DeseuPlastic(50.0f);
@@ -94,7 +121,7 @@ int main() {
                                 throw std::invalid_argument("Index invalid!");
                             }
 
-                            statia_sector_2[index];
+                            // statia_sector_2[index];
 
                             std::cout << "Introduceti cantitatea (kg): ";
                             float cantitate;
@@ -132,17 +159,22 @@ int main() {
                     default:
                         std::cout << "Optiune invalida!\n";
                 }
+
             }
         }
         else if (rol == 2) {
+            if (!autentifica_admin()) {
+                std::cout << "[Sistem] Acces refuzat la interfata de administrator.\n";
+                continue;
+            }
+
             bool in_meniu_admin = true;
             while (in_meniu_admin) {
                 std::cout << "\n--- INTERFATA ADMINISTRATOR ---\n";
                 std::cout << "1. Mentenanta (Detalii tehnice)\n";
                 std::cout << "2. Sorteaza flota dupa umplere\n";
-                std::cout << "3. Trimite masina de gunoi (Colectare)\n";
-                std::cout << "4. Vezi statistici globale oras\n";
-                std::cout << "5. Inapoi la selectia rolului\n";
+                std::cout << "3. Vezi statistici globale oras\n";
+                std::cout << "4. Inapoi la selectia rolului\n";
                 std::cout << "Alegere: ";
 
                 int optiune_a;
@@ -154,9 +186,13 @@ int main() {
                         statia_sector_2.sorteaza_dupa_umplere();
                         statia_sector_2.afiseaza_rezumat();
                         break;
-                    case 3: statia_sector_2.colecteaza_tot_gunoiul(); break;
-                    case 4: StatieSortare::afiseaza_statistici(); break;
-                    case 5: in_meniu_admin = false; break;
+                    case 3:
+                        StatieSortare::afiseaza_statistici();
+                        std::cout << "\n[ECO-SCOR ORAS] Scor sustenabilitate: "
+                                  << statia_sector_2.calculeaza_scor_sustenabilitate()
+                                  << " / 100\n";
+                        break;
+                    case 4: in_meniu_admin = false; break;
                     default: std::cout << "Optiune invalida!\n";
                 }
             }
@@ -164,6 +200,7 @@ int main() {
             std::cout << "Rol invalid!\n";
         }
     }
+
 
     std::cout << "\n[SISTEM OPRIT] Va multumim ca pastrati orasul curat!\n";
     return 0;

@@ -40,17 +40,18 @@ void StatieSortare::mentenanta_rutina() const {
     std::cout << "\n--- INCEPERE RUTINA MENTENANTA ---\n";
 
     for (ContainerDeseuri* container : flota_containere) {
-
-        container->afiseaza();
-
-        if (dynamic_cast<ContainerBiodegradabile*>(container) != nullptr) {
-            std::cout << "  -> [Actiune Mentenanta]: Se igienizeaza si se raceste containerul biodegradabil!\n";
+        if (container->este_in_mentenanta()) {
+            std::cout << "[Mentenanta] Se repara containerul...\n";
+            container->scoate_din_mentenanta();
+        } else {
+            container->afiseaza();
+            if (dynamic_cast<ContainerBiodegradabile*>(container) != nullptr)
+                std::cout << "  -> [Actiune]: Se igienizeaza containerul biodegradabil!\n";
+            else if (dynamic_cast<ContainerElectronice*>(container) != nullptr)
+                std::cout << "  -> [Actiune]: Se calibreaza senzorul de scurgeri toxice!\n";
         }
-        else if (dynamic_cast<ContainerElectronice*>(container) != nullptr) {
-            std::cout << "  -> [Actiune Mentenanta]: Se calibreaza senzorul de scurgeri toxice!\n";
-        }
-
     }
+
     std::cout << "--- RUTINA FINALIZATA ---\n";
 }
 
@@ -86,7 +87,7 @@ void StatieSortare::colecteaza_tot_gunoiul() const {
     std::cout << "--- COLECTARE FINALIZATA ---\n\n";
 }
 
-ContainerDeseuri* StatieSortare::operator[](size_t index) {
+ContainerDeseuri* StatieSortare::operator[](size_t index) const {
     if (index >= flota_containere.size()) {
         throw std::out_of_range("Eroare de indexare: Nu exista niciun container la pozitia " + std::to_string(index));
     }
@@ -99,4 +100,60 @@ void StatieSortare::afiseaza_rezumat() const {
         std::cout << *container << "\n";
     }
     std::cout << "---------------------\n";
+}
+
+float StatieSortare::calculeaza_scor_sustenabilitate() const {
+    if (flota_containere.empty()) return 100.0f;
+
+    float scor = 100.0f;
+
+    float capacitate_totala = 0.0f;
+    float umplere_totala = 0.0f;
+
+    for (const ContainerDeseuri* container : flota_containere) {
+        float capacitate = container->get_capacitate_maxima();
+        float umplere = container->get_grad_umplere();
+        float procent = (capacitate > 0) ? (umplere / capacitate) * 100.0f : 0.0f;
+
+        capacitate_totala += capacitate;
+        umplere_totala += umplere;
+
+        if (procent > 80.0f)
+            scor -= 15.0f;
+    }
+
+    float penalizare_carbon = total_reciclat / 10.0f;
+    if (penalizare_carbon > 30.0f)
+        penalizare_carbon = 30.0f;
+    scor -= penalizare_carbon;
+
+    if (capacitate_totala > 0) {
+        float rata_utilizare = (umplere_totala / capacitate_totala) * 100.0f;
+        if (rata_utilizare < 50.0f)
+            scor += 10.0f;
+    }
+
+    if (scor < 0.0f) scor = 0.0f;
+    if (scor > 100.0f) scor = 100.0f;
+
+    return scor;
+}
+
+void StatieSortare::colectare_automata() const {
+    std::cout << "\n--- VERIFICARE AUTOMATA CONTAINERE ---\n";
+    bool a_fost_colectat_ceva = false;
+
+    for (ContainerDeseuri* container : flota_containere) {
+        if (container->necesita_colectare()) {
+            float colectat = container->goleste();
+            total_reciclat += colectat;
+            std::cout << "[AUTO] Container depasit pragul! Au fost colectate " << colectat << " kg.\n";
+            a_fost_colectat_ceva = true;
+        }
+    }
+
+    if (!a_fost_colectat_ceva)
+        std::cout << "[AUTO] Niciun container nu a atins pragul de colectare.\n";
+
+    std::cout << "--- VERIFICARE FINALIZATA ---\n";
 }

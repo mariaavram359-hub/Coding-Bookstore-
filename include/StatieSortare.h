@@ -7,7 +7,6 @@
 
 #pragma once
 #include <vector>
-#include <stdexcept>
 #include "ContainerDeseuri.h"
 
 
@@ -24,7 +23,7 @@ public:
 
     void swap(StatieSortare& alta_statie) noexcept;
 
-    ContainerDeseuri* operator[](size_t index);
+    ContainerDeseuri* operator[](size_t index) const;
 
     void adaugaContainer(ContainerDeseuri* container);
     void mentenanta_rutina() const;
@@ -33,6 +32,8 @@ public:
     void afiseaza_rezumat() const;
     void colecteaza_tot_gunoiul() const;
     static void afiseaza_statistici();
+    [[nodiscard]] float calculeaza_scor_sustenabilitate() const;
+    void colectare_automata() const;
 };
 
 

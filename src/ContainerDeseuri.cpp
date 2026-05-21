@@ -23,6 +23,11 @@ void ContainerDeseuri::adauga_deseuri(const Deseu& deseu_aruncat) {
     float cantitate_primita = deseu_aruncat.get_cantitate();
     std::string tip_primit = deseu_aruncat.get_tip();
 
+    if (in_mentenanta) {
+        throw std::runtime_error("Containerul " + std::to_string(id) +
+                                 " este in mentenanta si nu accepta deseuri momentan!");
+    }
+
     if (cantitate_primita <= 0) {
         throw EroareCantitateInvalida("Eroare Logica: Cantitatea de deseuri introdusa (" +
                                       std::to_string(cantitate_primita) +
@@ -42,14 +47,29 @@ void ContainerDeseuri::adauga_deseuri(const Deseu& deseu_aruncat) {
     std::cout << "[Sistem Trapa] Au fost adaugate " << cantitate_primita << " kg de " << tip_primit << ".\n";
     std::cout << " -> Timp estimat descompunere: " << deseu_aruncat.timp_descompunere_ani() << " ani.\n";
     std::cout << " -> Amprenta de carbon generata: " << deseu_aruncat.calculeaza_amprenta_carbon() << " kg CO2.\n";
+
+    if (necesita_colectare()) {
+        std::cout << "\n[ATENTIE] Containerul " << id << " din " << locatie
+                  << " a depasit pragul de " << prag_colectare << "%!\n";
+        float colectat = goleste();
+        std::cout << "[AUTO] Masina de gunoi a fost trimisa automat! "
+                  << "Au fost colectate " << colectat << " kg.\n\n";
+    }
 }
 
 float ContainerDeseuri::goleste() {
     float cantitate_colectata = grad_umplere;
     grad_umplere = 0.0f;
+
+    numar_colectari++;
+    if (numar_colectari >= prag_mentenanta) {
+        in_mentenanta = true;
+        std::cout << "[SISTEM] Containerul " << id << " din " << locatie
+                  << " a intrat in mentenanta dupa " << numar_colectari << " colectari!\n";
+    }
+
     return cantitate_colectata;
 }
-
 float ContainerDeseuri::get_grad_umplere() const {
     return grad_umplere;
 }
@@ -66,3 +86,29 @@ std::ostream& operator<<(std::ostream& os, const ContainerDeseuri& container) {
     return os;
 }
 
+float ContainerDeseuri::get_capacitate_maxima() const {
+    return capacitate_maxima;
+}
+
+void ContainerDeseuri::set_prag_colectare(float prag) {
+    if (prag > 0.0f && prag <= 100.0f)
+        prag_colectare = prag;
+}
+
+bool ContainerDeseuri::necesita_colectare() const {
+    if (capacitate_maxima <= 0.0f) return false;
+    float procent = (grad_umplere / capacitate_maxima) * 100.0f;
+    return procent >= prag_colectare;
+
+
+}
+
+bool ContainerDeseuri::este_in_mentenanta() const {
+    return in_mentenanta;
+}
+
+void ContainerDeseuri::scoate_din_mentenanta() {
+    in_mentenanta = false;
+    numar_colectari = 0;
+    std::cout << "[Mentenanta] Containerul " << id << " a fost reparat si este din nou operational.\n";
+}
