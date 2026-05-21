@@ -2,7 +2,7 @@
 
 ContainerElectronice::ContainerElectronice(int id_container, std::string locatie_container,
 float capacitate_electronice, bool senzor_scurgeri_electronice)
-: ContainerDeseuri(id_container, std::move(locatie_container), capacitate_electronice),
+    : ContainerDeseuri(id_container, std::move(locatie_container), capacitate_electronice),
   senzor_scurgeri_activ(senzor_scurgeri_electronice) {
     tip_acceptat = "Electronice";
 }

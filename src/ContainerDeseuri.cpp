@@ -4,7 +4,8 @@
 #include <utility>
 
 ContainerDeseuri::ContainerDeseuri(const int id_container, std::string locatie_container, float capacitate_maxima_container)
-    :id(id_container), locatie(std::move(locatie_container)), capacitate_maxima(capacitate_maxima_container), grad_umplere(0.0f) {
+    :id(id_container), locatie(std::move(locatie_container)),
+    capacitate_maxima(capacitate_maxima_container), grad_umplere(0.0f) {
 }
 
 void ContainerDeseuri::afiseaza() const {
@@ -35,7 +36,6 @@ void ContainerDeseuri::adauga_deseuri(const Deseu& deseu_aruncat) {
     }
 
     if (tip_primit != tip_acceptat) {
-
         throw EroareTipDeseu("Trapa blocata! Nu puteti arunca [" + tip_primit + "] intr-un container pentru [" + tip_acceptat + "].");
     }
 

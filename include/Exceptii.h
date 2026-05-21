@@ -29,7 +29,8 @@ class EroareCantitateInvalida : public std::exception {
 private:
     std::string mesaj;
 public:
-    explicit EroareCantitateInvalida(const std::string& msg) : mesaj(msg) {}
+    explicit EroareCantitateInvalida(const std::string& msg)
+    : mesaj(msg) {}
 
     [[nodiscard]] const char* what() const noexcept override {
         return mesaj.c_str();

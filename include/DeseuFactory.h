@@ -5,6 +5,7 @@
 #include "DeseuPlastic.h"
 #include "DeseuBiologic.h"
 #include "DeseuElectronic.h"
+#include "DeseuSticla.h"
 #include <string>
 #include <stdexcept>
 
@@ -17,6 +18,8 @@ public:
             return new DeseuBiologic(cantitate);
         if (tip == "Electronice")
             return new DeseuElectronic(cantitate);
+        if (tip == "Sticla")
+            return new DeseuSticla(cantitate);
 
         throw std::invalid_argument("Tip de deseu necunoscut: " + tip);
     }

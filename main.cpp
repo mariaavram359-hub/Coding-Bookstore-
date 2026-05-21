@@ -8,7 +8,9 @@
 #include "include/DeseuElectronic.h"
 #include "include/DeseuFactory.h"
 #include <iostream>
-#include <limits>
+#include "include/ContainerSticla.h"
+#include "include/DeseuSticla.h"
+
 
 bool autentifica_admin() {
     const std::string parola_corecta = "admin123";
@@ -49,20 +51,25 @@ int main() {
     auto* c_plastic = new ContainerPlastic(101, "Strada Primaverii", 200.0f, 85.5f);
     auto* c_bio = new ContainerBiodegradabile(102, "Piata Centrala", 150.0f, 18.5f, true);
     auto* c_electric = new ContainerElectronice(103, "Liceul Teoretic", 50.0f, true);
+    auto* c_sticla = new ContainerSticla(104, "Parcul Central", 50.0f, true);
 
     statia_centrala.adaugaContainer(c_plastic);
     statia_centrala.adaugaContainer(c_bio);
     statia_centrala.adaugaContainer(c_electric);
+    statia_centrala.adaugaContainer(c_sticla);
 
-    c_plastic->set_prag_colectare(80.0f);   // colectare la 80%
-    c_bio->set_prag_colectare(70.0f);       // bio se colecteaza mai devreme
-    c_electric->set_prag_colectare(60.0f);  // electronicele, si mai devreme
+    c_plastic->set_prag_colectare(80.0f);
+    c_bio->set_prag_colectare(70.0f);
+    c_electric->set_prag_colectare(60.0f);
+    c_sticla->set_prag_colectare(65.0f);
 
     try {
         *c_plastic += DeseuPlastic(50.0f);
         *c_bio += DeseuBiologic(100.0f);
         *c_electric += DeseuElectronic(10.0f);
         *c_plastic += DeseuElectronic(5.0f);
+        *c_sticla += DeseuSticla(15.0f);
+
     } catch (const EroareTipDeseu& eroare) {
         std::cerr << "[DEMO EROARE] " << eroare.what() << "\n\n";
     } catch (const EroareSuprasolicitare& eroare) {
@@ -72,11 +79,12 @@ int main() {
     }
 
     statia_centrala.colecteaza_tot_gunoiul();
-
+///
     StatieSortare statia_sector_2;
     statia_sector_2.adaugaContainer(new ContainerPlastic(201, "Aleea Trandafirilor", 300.0f, 90.0f));
     statia_sector_2.adaugaContainer(new ContainerBiodegradabile(202, "Parcul Tineretului", 200.0f, 15.0f, false));
     statia_sector_2.adaugaContainer(new ContainerElectronice(203, "Bulevardul Unirii", 50.0f, true));
+    statia_sector_2.adaugaContainer(new ContainerSticla(204, "Centrul Vechi", 100.0f, true));
 
     bool sistem_pornit = true;
 
@@ -107,7 +115,10 @@ int main() {
                 std::cout << "Alegere: ";
 
                 int optiune_c;
-                if (!(std::cin >> optiune_c)) { curata_cin(); continue; }
+                if (!(std::cin >> optiune_c)) {
+                    curata_cin();
+                    continue;
+                }
 
                 switch (optiune_c) {
                     case 1:
@@ -115,7 +126,7 @@ int main() {
                         break;
                     case 2: {
                         try {
-                            std::cout << "\nIntroduceti ID-ul (Indexul) containerului (0=Plastic, 1=Bio, 2=Electronice): ";
+                            std::cout << "\nIntroduceti ID-ul (Indexul) containerului (0=Plastic, 1=Bio, 2=Electronice, 3=Sticla): ";
                             int index;
                             if (!(std::cin >> index)) {
                                 curata_cin();
@@ -135,7 +146,7 @@ int main() {
                                 throw EroareCantitateInvalida("Cantitatea introdusa trebuie sa fie strict pozitiva!");
                             }
 
-                            std::cout << "Introduceti tipul deseului (Plastic / Biologic / Electronice): ";
+                            std::cout << "Introduceti tipul deseului (Plastic / Biologic / Electronice / Sticla): ";
                             std::string tip;
                             std::cin >> tip;
 
@@ -174,10 +185,15 @@ int main() {
                 std::cout << "Alegere: ";
 
                 int optiune_a;
-                if (!(std::cin >> optiune_a)) { curata_cin(); continue; }
+                if (!(std::cin >> optiune_a)) {
+                    curata_cin();
+                    continue;
+                }
 
                 switch (optiune_a) {
-                    case 1: statia_sector_2.mentenanta_rutina(); break;
+                    case 1:
+                        statia_sector_2.mentenanta_rutina();
+                        break;
                     case 2:
                         statia_sector_2.sorteaza_dupa_umplere();
                         statia_sector_2.afiseaza_rezumat();
@@ -188,7 +204,10 @@ int main() {
                     case 4: {
                         std::cout << "Introduceti ID-ul containerului: ";
                         int id_cautat;
-                        if (!(std::cin >> id_cautat)) { curata_cin(); break; }
+                        if (!(std::cin >> id_cautat)) {
+                            curata_cin();
+                            break;
+                        }
                         try {
                             ContainerDeseuri* gasit = statia_sector_2.cauta_dupa_id(id_cautat);
                             std::cout << *gasit << "\n";
@@ -197,7 +216,9 @@ int main() {
                         }
                         break;
                     }
-                    case 5: in_meniu_admin = false; break;
+                    case 5:
+                        in_meniu_admin = false;
+                        break;
                     default: std::cout << "Optiune invalida!\n";
                 }
             }

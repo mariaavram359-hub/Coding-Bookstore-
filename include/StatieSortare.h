@@ -3,8 +3,6 @@
 
 #pragma once
 #include <vector>
-#include <stdexcept>
-#include <numeric>
 #include <string>
 #include "ContainerDeseuri.h"
 
