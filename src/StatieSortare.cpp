@@ -173,12 +173,12 @@ std::string StatieSortare::interpreteaza_scor(float scor) {
     return                    "CRITIC    - Orasul este in criza ecologica! Interventie imediata!";
 }
 
-void StatieSortare::afiseaza_statistici() {
-    std::cout << "====================================\n";
-    std::cout << "STATISTICI GLOBALE CARTIER:\n";
-    std::cout << "Total deseuri procesate: " << total_reciclat << " kg\n";
-    std::cout << "====================================\n";
-}
+// void StatieSortare::afiseaza_statistici() {
+//     std::cout << "====================================\n";
+//     std::cout << "STATISTICI GLOBALE CARTIER:\n";
+//     std::cout << "Total deseuri procesate: " << total_reciclat << " kg\n";
+//     std::cout << "====================================\n";
+// }
 
 void StatieSortare::afiseaza_raport_complet() const {
     std::cout << "\n========================================\n";

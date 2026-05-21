@@ -86,9 +86,9 @@ int main() {
     statia_sector_2.adaugaContainer(new ContainerElectronice(203, "Bulevardul Unirii", 50.0f, true));
     statia_sector_2.adaugaContainer(new ContainerSticla(204, "Centrul Vechi", 100.0f, true));
 
-    bool sistem_pornit = true;
-
-    while (sistem_pornit) {
+    // bool sistem_pornit = true;
+    int rol = 0;
+    while (rol != 3) {
         std::cout << "\n=========================================\n";
         std::cout << "        SELECTARE ROL UTILIZATOR         \n";
         std::cout << "=========================================\n";
@@ -97,11 +97,13 @@ int main() {
         std::cout << "3. Oprire Sistem\n";
         std::cout << "Alegeti rolul: ";
 
-        int rol;
-        if (!(std::cin >> rol)) { curata_cin(); continue; }
+        // int rol;
+        if (!(std::cin >> rol)) {
+            curata_cin();
+            continue;
+        }
 
         if (rol == 3) {
-            sistem_pornit = false;
             break;
         }
 
@@ -154,6 +156,8 @@ int main() {
                             std::cout << deseu->genereaza_raport_ecologic();
                             *(statia_sector_2[index]) += *deseu;
                             delete deseu;
+
+                            statia_sector_2.colectare_automata();
 
                         } catch (const std::exception& e) {
                             std::cerr << "\n[ACTIUNE RESPINSA] " << e.what() << "\n";
@@ -209,7 +213,7 @@ int main() {
                             break;
                         }
                         try {
-                            ContainerDeseuri* gasit = statia_sector_2.cauta_dupa_id(id_cautat);
+                            const ContainerDeseuri* gasit = statia_sector_2.cauta_dupa_id(id_cautat);
                             std::cout << *gasit << "\n";
                         } catch (const std::out_of_range& e) {
                             std::cerr << "[Eroare] " << e.what() << "\n";
