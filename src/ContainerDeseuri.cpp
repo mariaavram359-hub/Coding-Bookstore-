@@ -45,8 +45,7 @@ void ContainerDeseuri::adauga_deseuri(const Deseu& deseu_aruncat) {
 
     grad_umplere += cantitate_primita;
     std::cout << "[Sistem Trapa] Au fost adaugate " << cantitate_primita << " kg de " << tip_primit << ".\n";
-    std::cout << " -> Timp estimat descompunere: " << deseu_aruncat.timp_descompunere_ani() << " ani.\n";
-    std::cout << " -> Amprenta de carbon generata: " << deseu_aruncat.calculeaza_amprenta_carbon() << " kg CO2.\n";
+    std::cout << deseu_aruncat << "\n";
 
     if (necesita_colectare()) {
         std::cout << "\n[ATENTIE] Containerul " << id << " din " << locatie
@@ -111,4 +110,8 @@ void ContainerDeseuri::scoate_din_mentenanta() {
     in_mentenanta = false;
     numar_colectari = 0;
     std::cout << "[Mentenanta] Containerul " << id << " a fost reparat si este din nou operational.\n";
+}
+
+int ContainerDeseuri::get_id() const {
+    return id;
 }

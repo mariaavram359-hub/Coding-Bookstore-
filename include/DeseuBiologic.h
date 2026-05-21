@@ -17,5 +17,10 @@ public:
     [[nodiscard]] float calculeaza_amprenta_carbon() const override;
 
     [[nodiscard]] std::string get_tip() const override;
+
+    [[nodiscard]] std::string genereaza_raport_ecologic() const override;
+
+protected:
+    void afiseaza_impl(std::ostream& os) const override;
 };
 #endif //OOP_DESEUBIOLOGIC_H

@@ -6,6 +6,7 @@
 #include "include/DeseuPlastic.h"
 #include "include/DeseuBiologic.h"
 #include "include/DeseuElectronic.h"
+#include "include/DeseuFactory.h"
 #include <iostream>
 #include <limits>
 
@@ -138,15 +139,10 @@ int main() {
                             std::string tip;
                             std::cin >> tip;
 
-                            if (tip == "Plastic") {
-                                *(statia_sector_2[index]) += DeseuPlastic(cantitate);
-                            } else if (tip == "Biologic") {
-                                *(statia_sector_2[index]) += DeseuBiologic(cantitate);
-                            } else if (tip == "Electronice") {
-                                *(statia_sector_2[index]) += DeseuElectronic(cantitate);
-                            } else {
-                                throw std::invalid_argument("Tip de deseu necunoscut in sistem!");
-                            }
+                            Deseu* deseu = DeseuFactory::creeaza(tip, cantitate);
+                            std::cout << deseu->genereaza_raport_ecologic();
+                            *(statia_sector_2[index]) += *deseu;
+                            delete deseu;
 
                         } catch (const std::exception& e) {
                             std::cerr << "\n[ACTIUNE RESPINSA] " << e.what() << "\n";
@@ -170,11 +166,11 @@ int main() {
 
             bool in_meniu_admin = true;
             while (in_meniu_admin) {
-                std::cout << "\n--- INTERFATA ADMINISTRATOR ---\n";
                 std::cout << "1. Mentenanta (Detalii tehnice)\n";
                 std::cout << "2. Sorteaza flota dupa umplere\n";
-                std::cout << "3. Vezi statistici globale oras\n";
-                std::cout << "4. Inapoi la selectia rolului\n";
+                std::cout << "3. Raport complet statie\n";
+                std::cout << "4. Cauta container dupa ID\n";
+                std::cout << "5. Inapoi la selectia rolului\n";
                 std::cout << "Alegere: ";
 
                 int optiune_a;
@@ -187,12 +183,21 @@ int main() {
                         statia_sector_2.afiseaza_rezumat();
                         break;
                     case 3:
-                        StatieSortare::afiseaza_statistici();
-                        std::cout << "\n[ECO-SCOR ORAS] Scor sustenabilitate: "
-                                  << statia_sector_2.calculeaza_scor_sustenabilitate()
-                                  << " / 100\n";
+                        statia_sector_2.afiseaza_raport_complet();
                         break;
-                    case 4: in_meniu_admin = false; break;
+                    case 4: {
+                        std::cout << "Introduceti ID-ul containerului: ";
+                        int id_cautat;
+                        if (!(std::cin >> id_cautat)) { curata_cin(); break; }
+                        try {
+                            ContainerDeseuri* gasit = statia_sector_2.cauta_dupa_id(id_cautat);
+                            std::cout << *gasit << "\n";
+                        } catch (const std::out_of_range& e) {
+                            std::cerr << "[Eroare] " << e.what() << "\n";
+                        }
+                        break;
+                    }
+                    case 5: in_meniu_admin = false; break;
                     default: std::cout << "Optiune invalida!\n";
                 }
             }

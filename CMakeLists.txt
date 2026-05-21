@@ -72,6 +72,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         include/DeseuElectronic.h
         src/DeseuElectronic.cpp
         include/StatieSortare.h
+        include/DeseuFactory.h
 )
 target_sources(${MAIN_EXECUTABLE_NAME}
     PRIVATE

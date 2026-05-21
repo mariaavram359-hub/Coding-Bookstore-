@@ -40,6 +40,8 @@ public:
     [[nodiscard]] bool este_in_mentenanta() const;
     void scoate_din_mentenanta();
 
+    [[nodiscard]] int get_id() const;
+
 protected:
     std::string tip_acceptat;
     virtual void afiseaza_impl() const = 0;

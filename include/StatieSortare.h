@@ -1,19 +1,19 @@
-//
-// Created by lenovo on 20.05.2026.
-//
-
 #ifndef OOP_STATIESORTARE_H
 #define OOP_STATIESORTARE_H
 
 #pragma once
 #include <vector>
+#include <stdexcept>
+#include <numeric>
+#include <string>
 #include "ContainerDeseuri.h"
-
 
 class StatieSortare {
 private:
     std::vector<ContainerDeseuri*> flota_containere;
     static float total_reciclat;
+
+    static float goleste_container(ContainerDeseuri* container) ;
 
 public:
     StatieSortare() = default;
@@ -27,14 +27,20 @@ public:
 
     void adaugaContainer(ContainerDeseuri* container);
     void mentenanta_rutina() const;
-
     void sorteaza_dupa_umplere();
     void afiseaza_rezumat() const;
     void colecteaza_tot_gunoiul() const;
-    static void afiseaza_statistici();
-    [[nodiscard]] float calculeaza_scor_sustenabilitate() const;
     void colectare_automata() const;
-};
+    void afiseaza_raport_complet() const;
 
+    [[nodiscard]] ContainerDeseuri* cauta_dupa_id(int id) const;
+    [[nodiscard]] int numar_containere_critice() const;
+    [[nodiscard]] float total_kg_in_flota() const;
+    [[nodiscard]] bool exista_containere_in_mentenanta() const;
+    [[nodiscard]] float calculeaza_scor_sustenabilitate() const;
+
+    static void afiseaza_statistici();
+    static std::string interpreteaza_scor(float scor);
+};
 
 #endif //OOP_STATIESORTARE_H
