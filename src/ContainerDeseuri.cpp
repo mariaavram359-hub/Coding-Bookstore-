@@ -19,25 +19,29 @@ void ContainerDeseuri::afiseaza() const {
     std::cout << "\n";
 }
 
-void ContainerDeseuri::adauga_deseuri(float cantitate, const std::string& tip_deseu_aruncat) {
-    if (cantitate <= 0) {
+void ContainerDeseuri::adauga_deseuri(const Deseu& deseu_aruncat) {
+    float cantitate_primita = deseu_aruncat.get_cantitate();
+    std::string tip_primit = deseu_aruncat.get_tip();
+
+    if (cantitate_primita <= 0) {
         throw EroareCantitateInvalida("Eroare Logica: Cantitatea de deseuri introdusa (" +
-                                      std::to_string(cantitate) +
+                                      std::to_string(cantitate_primita) +
                                       " kg) trebuie sa fie strict pozitiva!");
     }
 
-    if (tip_deseu_aruncat != tip_acceptat) {
+    if (tip_primit != tip_acceptat) {
 
-        throw EroareTipDeseu("Trapa blocata! Nu puteti arunca [" + tip_deseu_aruncat + "] intr-un container pentru [" + tip_acceptat + "].");
+        throw EroareTipDeseu("Trapa blocata! Nu puteti arunca [" + tip_primit + "] intr-un container pentru [" + tip_acceptat + "].");
     }
 
-    if (grad_umplere + cantitate > capacitate_maxima) {
+    if (grad_umplere + cantitate_primita > capacitate_maxima) {
         throw EroareSuprasolicitare("Eroare! Containerul " + std::to_string(id) + " a atins capacitatea maxima.");
     }
 
-    grad_umplere += cantitate;
-    std::cout << "[Sistem Trapa] S-au adaugat " << cantitate << " kg de " << tip_deseu_aruncat << " in containerul "
-    << id << ".\n";
+    grad_umplere += cantitate_primita;
+    std::cout << "[Sistem Trapa] Au fost adaugate " << cantitate_primita << " kg de " << tip_primit << ".\n";
+    std::cout << " -> Timp estimat descompunere: " << deseu_aruncat.timp_descompunere_ani() << " ani.\n";
+    std::cout << " -> Amprenta de carbon generata: " << deseu_aruncat.calculeaza_amprenta_carbon() << " kg CO2.\n";
 }
 
 float ContainerDeseuri::goleste() {
@@ -50,8 +54,8 @@ float ContainerDeseuri::get_grad_umplere() const {
     return grad_umplere;
 }
 
-ContainerDeseuri& ContainerDeseuri::operator+=(const PachetDeseu& pachet) {
-    this->adauga_deseuri(pachet.cantitate, pachet.tip);
+ContainerDeseuri& ContainerDeseuri::operator+=(const Deseu& deseu_aruncat) {
+    this->adauga_deseuri(deseu_aruncat);
     return *this;
 }
 
@@ -61,3 +65,4 @@ std::ostream& operator<<(std::ostream& os, const ContainerDeseuri& container) {
        << " | Umplere: " << container.grad_umplere << "/" << container.capacitate_maxima << " kg";
     return os;
 }
+

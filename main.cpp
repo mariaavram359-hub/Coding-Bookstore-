@@ -1,9 +1,11 @@
-
 #include "include/StatieSortare.h"
 #include "include/ContainerPlastic.h"
 #include "include/ContainerBiodegradabile.h"
 #include "include/ContainerElectronice.h"
 #include "include/Exceptii.h"
+#include "include/DeseuPlastic.h"
+#include "include/DeseuBiologic.h"
+#include "include/DeseuElectronic.h"
 #include <iostream>
 #include <limits>
 
@@ -22,21 +24,23 @@ int main() {
     StatieSortare statia_centrala;
     auto* c_plastic = new ContainerPlastic(101, "Strada Primaverii", 200.0f, 85.5f);
     auto* c_bio = new ContainerBiodegradabile(102, "Piata Centrala", 150.0f, 18.5f, true);
-    auto* c_baterii = new ContainerElectronice(103, "Liceul Teoretic", 50.0f, true);
+    auto* c_electric = new ContainerElectronice(103, "Liceul Teoretic", 50.0f, true);
 
     statia_centrala.adaugaContainer(c_plastic);
     statia_centrala.adaugaContainer(c_bio);
-    statia_centrala.adaugaContainer(c_baterii);
+    statia_centrala.adaugaContainer(c_electric);
 
     try {
-        *c_plastic += PachetDeseu{50.0f, "Plastic"};
-        *c_bio += PachetDeseu{100.0f, "Biologic"};
-        *c_baterii += PachetDeseu{10.0f, "Electronice"};
-        *c_plastic += PachetDeseu{5.0f, "Electronice"}; 
+        *c_plastic += DeseuPlastic(50.0f);
+        *c_bio += DeseuBiologic(100.0f);
+        *c_electric += DeseuElectronic(10.0f);
+        *c_plastic += DeseuElectronic(5.0f);
     } catch (const EroareTipDeseu& eroare) {
         std::cerr << "[DEMO EROARE] " << eroare.what() << "\n\n";
     } catch (const EroareSuprasolicitare& eroare) {
         std::cerr << "[DEMO ALERTA] " << eroare.what() << "\n\n";
+    } catch (const std::exception& eroare) {
+        std::cerr << "[DEMO ALERTA GENERALA] " << eroare.what() << "\n\n";
     }
 
     statia_centrala.colecteaza_tot_gunoiul();
@@ -56,12 +60,9 @@ int main() {
         std::cout << "2. Administrator (Gestioneaza sistemul)\n";
         std::cout << "3. Oprire Sistem\n";
         std::cout << "Alegeti rolul: ";
-        
+
         int rol;
-        if (!(std::cin >> rol)) {
-            curata_cin();
-            continue;
-        }
+        if (!(std::cin >> rol)) { curata_cin(); continue; }
 
         if (rol == 3) {
             sistem_pornit = false;
@@ -76,18 +77,15 @@ int main() {
                 std::cout << "2. Arunca gunoi\n";
                 std::cout << "3. Inapoi la selectia rolului\n";
                 std::cout << "Alegere: ";
-                
+
                 int optiune_c;
-                if (!(std::cin >> optiune_c)) {
-                    curata_cin(); continue;
-                }
+                if (!(std::cin >> optiune_c)) { curata_cin(); continue; }
 
                 switch (optiune_c) {
                     case 1:
                         statia_sector_2.afiseaza_rezumat();
                         break;
                     case 2: {
-                        // TOTUL intra intr-un singur bloc try
                         try {
                             std::cout << "\nIntroduceti ID-ul (Indexul) containerului (0=Plastic, 1=Bio, 2=Electronice): ";
                             int index;
@@ -96,7 +94,7 @@ int main() {
                                 throw std::invalid_argument("Index invalid!");
                             }
 
-                            statia_sector_2[index]; // Testam daca exista indexul
+                            statia_sector_2[index];
 
                             std::cout << "Introduceti cantitatea (kg): ";
                             float cantitate;
@@ -105,7 +103,6 @@ int main() {
                                 throw std::invalid_argument("Cantitate invalida!");
                             }
 
-                            // Daca aruncam exceptia aici, trebuie sa fim in interiorul acoladelor de la 'try'
                             if (cantitate <= 0) {
                                 throw EroareCantitateInvalida("Cantitatea introdusa trebuie sa fie strict pozitiva!");
                             }
@@ -114,14 +111,21 @@ int main() {
                             std::string tip;
                             std::cin >> tip;
 
-                            *(statia_sector_2[index]) += PachetDeseu{cantitate, tip};
+                            if (tip == "Plastic") {
+                                *(statia_sector_2[index]) += DeseuPlastic(cantitate);
+                            } else if (tip == "Biologic") {
+                                *(statia_sector_2[index]) += DeseuBiologic(cantitate);
+                            } else if (tip == "Electronice") {
+                                *(statia_sector_2[index]) += DeseuElectronic(cantitate);
+                            } else {
+                                throw std::invalid_argument("Tip de deseu necunoscut in sistem!");
+                            }
 
-                        } catch (const std::exception& e) { // <-- PRINDE ABSOLUT TOT
+                        } catch (const std::exception& e) {
                             std::cerr << "\n[ACTIUNE RESPINSA] " << e.what() << "\n";
                         }
                         break;
                     }
-
                     case 3:
                         in_meniu_cetatean = false;
                         break;
@@ -140,32 +144,20 @@ int main() {
                 std::cout << "4. Vezi statistici globale oras\n";
                 std::cout << "5. Inapoi la selectia rolului\n";
                 std::cout << "Alegere: ";
-                
+
                 int optiune_a;
-                if (!(std::cin >> optiune_a)) {
-                    curata_cin();
-                    continue;
-                }
+                if (!(std::cin >> optiune_a)) { curata_cin(); continue; }
 
                 switch (optiune_a) {
-                    case 1:
-                        statia_sector_2.mentenanta_rutina();
-                        break;
+                    case 1: statia_sector_2.mentenanta_rutina(); break;
                     case 2:
                         statia_sector_2.sorteaza_dupa_umplere();
                         statia_sector_2.afiseaza_rezumat();
                         break;
-                    case 3:
-                        statia_sector_2.colecteaza_tot_gunoiul();
-                        break;
-                    case 4:
-                        StatieSortare::afiseaza_statistici();
-                        break;
-                    case 5:
-                        in_meniu_admin = false;
-                        break;
-                    default:
-                        std::cout << "Optiune invalida!\n";
+                    case 3: statia_sector_2.colecteaza_tot_gunoiul(); break;
+                    case 4: StatieSortare::afiseaza_statistici(); break;
+                    case 5: in_meniu_admin = false; break;
+                    default: std::cout << "Optiune invalida!\n";
                 }
             }
         } else {

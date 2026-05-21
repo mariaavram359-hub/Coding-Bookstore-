@@ -4,11 +4,7 @@
 
 #pragma once
 #include <iostream>
-
-struct PachetDeseu {
-    float cantitate;
-    std::string tip;
-};
+#include "Deseu.h"
 
 class ContainerDeseuri {
 protected:
@@ -24,9 +20,8 @@ public:
     [[nodiscard]] virtual ContainerDeseuri* clone() const = 0;
     void afiseaza() const;
 
-    void adauga_deseuri(float cantitate, const std::string& tip_deseu_aruncat);
-
-    ContainerDeseuri& operator+=(const PachetDeseu& pachet);
+    void adauga_deseuri(const Deseu& deseu_aruncat);
+    ContainerDeseuri& operator+=(const Deseu& deseu_aruncat);
 
     friend std::ostream& operator<<(std::ostream& os, const ContainerDeseuri& container);
 
