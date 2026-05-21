@@ -38,7 +38,7 @@ bool autentifica_admin() {
 void curata_cin() {
     if (std::cin.eof()) {
         std::cout << "\n[Sistem] Iesire de urgenta (EOF detectat).\n";
-        exit(1);
+        exit(0);
     }
     std::cin.clear();
     std::cin.ignore(10000, '\n');
