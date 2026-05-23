@@ -1,7 +1,7 @@
 
 # Smart Ecology System
 
-Într-o lume în care încălzirea globală devine o problemă din ce în ce mai gravă, o aplicație precum Smart Ecology System vine îm ajutor! Aplicația C++, de tip simulator administrativ IoT, transpune rigoarea și protocoalele de mediu într-o platformă de gestiune a resurselor urbane. Proiectul funcționează ca un nucleu digital de comandă pentru o stație centrală, coordonând interacțiunea dintre infrastructura de colectare, flota de containere inteligente și operatorii umani.
+Într-o lume în care încălzirea globală devine o problemă din ce în ce mai gravă, o aplicație precum Smart Ecology System vine în ajutor! Aplicația C++, de tip simulator administrativ IoT, transpune rigoarea și protocoalele de mediu într-o platformă de gestiune a resurselor urbane. Proiectul funcționează ca un nucleu digital de comandă pentru o stație centrală, coordonând interacțiunea dintre infrastructura de colectare, flota de containere inteligente și operatorii umani.
 
 Ce face proiectul:
 
