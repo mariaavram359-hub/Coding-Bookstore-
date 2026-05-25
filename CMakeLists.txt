@@ -77,10 +77,10 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         include/ContainerSticla.h
         src/ContainerSticla.cpp
 )
-target_sources(${MAIN_EXECUTABLE_NAME}
-    PRIVATE
-        src/Example.cpp
-)
+#target_sources(${MAIN_EXECUTABLE_NAME}
+#    PRIVATE
+#        src/Example.cpp
+#)
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
 # NOTE: RUN_SANITIZERS is optional, if it's not present it will default to true
